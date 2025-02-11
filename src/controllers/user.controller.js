@@ -29,7 +29,7 @@ module.exports.registerController = async (req,res)=>{
             return res.status(400).json({message: "User already exists"})
         }
     
-        const hashedPassword = await bcrypt.hash(password, 10)
+        const hashedPassword = await UserModel.hashPassword(password)
     
         const newuser = await UserModel.create({
             name,
@@ -37,8 +37,8 @@ module.exports.registerController = async (req,res)=>{
             password:hashedPassword
         })
     
-        const token = jwt.sign({_id: newuser._id,email: newuser.email},config.JWT_SECRET_KEY)
-        res.status(200).json({
+        const token = newuser.generateToken()
+        res.status(201).json({
             message: 'user registered successfully',
             token: token
         })
@@ -71,14 +71,13 @@ module.exports.loginUserController = async (req,res) => {
             return res.status(400).json({message: "Invalid email or password"})
         }
 
-        const user = await UserModel.findOne({email})
-        const isMatch = await bcrypt.compare(password,user.password )
+        const isMatch = await UserModel.comparePassword(password,isUserExist.password )
 
         if(!isMatch){
             return res.status(400).json({message: "Invalid email or password"})
         }
 
-        const token = jwt.sign({email:user.email,_id:user._id},config.JWT_SECRET_KEY)
+        const token = isUserExist.generateToken()
         console.log('Token: ', token)
         res.status(200).json({message: 'logged in',token: token})
     }
@@ -86,4 +85,8 @@ module.exports.loginUserController = async (req,res) => {
         console.error('Error during login', error)
         res.status.send('Internal Server Error')
     }
+}
+
+module.exports.profileUserController = async (req, res) => {
+    res.send(req.user)
 }
