@@ -1,13 +1,10 @@
-import { useState } from 'react'
+import AppRoutes from './routes/Routes'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <h1>Instagram</h1>
-    </>
+    <AppRoutes />
   )
 }
 
