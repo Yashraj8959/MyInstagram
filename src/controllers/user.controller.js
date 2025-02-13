@@ -1,15 +1,13 @@
 const UserModel = require('../models/user.model')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken');
-const config = require('../config/config');
+const Post = require('../models/post.model')
 
 module.exports.registerController = async (req,res)=>{
     try {
         
-        const {name, email, password} = req.body;
+        const {username, email, password} = req.body;
         
-        if(!name){
-            return res.status(400).json({message: "user name is required"})
+        if(!username){
+            return res.status(400).json({message: "username is required"})
         }
         if(!email){
             return res.status(400).json({message: "email is required"})
@@ -21,7 +19,7 @@ module.exports.registerController = async (req,res)=>{
         const isUserExist = await UserModel.findOne({
             $or:[
                 {email},
-                {name}
+                {username}
             ]
         })
     
@@ -32,7 +30,7 @@ module.exports.registerController = async (req,res)=>{
         const hashedPassword = await UserModel.hashPassword(password)
     
         const newuser = await UserModel.create({
-            name,
+            username,
             email,
             password:hashedPassword
         })
@@ -44,7 +42,7 @@ module.exports.registerController = async (req,res)=>{
         })
     } catch (error) {
         console.log("error during register",error)
-        res.status(500).send('Internal server error')
+        res.status(500).json({ message: "Internal server error" })
     }
     
 
@@ -83,10 +81,12 @@ module.exports.loginUserController = async (req,res) => {
     }
     catch(error){
         console.error('Error during login', error)
-        res.status.send('Internal Server Error')
+        res.status(500).json({message: 'Internal Server Error'})
     }
 }
 
 module.exports.profileUserController = async (req, res) => {
-    res.send(req.user)
+    console.log(req.user)
+    const user = await UserModel.findById(req.user._id).populate("posts")
+    res.send(user)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 }

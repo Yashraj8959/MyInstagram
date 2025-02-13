@@ -4,7 +4,7 @@ const config = require('../config/config');
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
-    name: {
+    username: {
         type: String,
         required: true,
         trim: true
@@ -27,19 +27,19 @@ const userSchema = new mongoose.Schema({
     posts: [
         {
             type: mongoose.Schema.Types.ObjectId, //ek ek data ka type object id rahe ga jo ki ek array me staore ho ga 
-            ref: "posts"
+            ref: "Post"
         }
     ],
     followers: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "user"
+            ref: "User"
         }
     ],
     following: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "user"
+            ref: "User"
         }
     ],
 
@@ -52,17 +52,20 @@ const userSchema = new mongoose.Schema({
 
 
 
-const UserModel = mongoose.model('User', userSchema);
 
 userSchema.methods.generateToken = function() {
-    return jwt.sign({ _id: this._id }, config.JWT_SECRET_KEY);
+    return jwt.sign({ 
+        id: this._id,
+        username: this.username,
+        email: this.email, 
+    }, config.JWT_SECRET_KEY);
 }
 
 userSchema.statics.verifyToken = function(token) {
     return jwt.verify(token, config.JWT_SECRET_KEY);
 }
 
-userSchema.statics.hashpassword = async function(password){
+userSchema.statics.hashPassword = async function(password){
     return await bcrypt.hash(password, 10);
 }
 
@@ -71,5 +74,6 @@ userSchema.statics.comparePassword = async function(password, hash){
 }
 
 
+const UserModel = mongoose.model('User', userSchema);
 
 module.exports = UserModel;
