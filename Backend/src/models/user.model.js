@@ -7,17 +7,24 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
+        unique: [ true, 'Username is already taken' ],
+        lowercase: [ true, 'Username must be in lowercase' ],
+        minlength: [ 3, 'Username must be at least 3 characters long' ],
+        maxlength: [ 20, 'Username must be at most 20 characters long' ],
         trim: true
     },
     email: {
         type: String,
         required: true,
         unique: true,
+        lowercase: [ true, 'Email must be in lowercase' ],
         trim: true
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minlength: [ 8, 'Password must be at least 8 characters long' ],
+        select: false //password nhi store karna padega
     },
     profileIamge: {
         type: String,
