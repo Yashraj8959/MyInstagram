@@ -7,12 +7,15 @@ const postSchema = new mongoose.Schema({
     },
     caption: {
         type: String,
-        required: true
     },
     likes: {
         type: Number,
         default: 0
     },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
 });
 
 const Post = mongoose.model('Post', postSchema);

@@ -1,26 +1,20 @@
-const PostModel = require("../models/post.model");
-const UserModel = require("../models/user.model");
+const Post = require('../models/post.model');
 
-module.exports.createPostController = async (req,res) =>{
-    const {media, caption} = req.body;
+module.exports.createPostController = async (req, res) => {
+    try {
+        const { media, caption } = req.body;
+        const author = req.user._id;
 
-    
-    if(!media){
-        return res.status(400).json({message: "media is required"})
+        const newPost = new Post({
+            media,
+            caption,
+            author
+        });
+
+        const savedPost = await newPost.save();
+        res.status(201).json({ message: "Post created successfully", data: savedPost });
+    } catch (error) {
+        console.error("Post creation error:", error);
+        res.status(500).json({ message: "Failed to create post" });
     }
-    if(!caption){
-        return res.status(400).json({message: "caption is required"})
-    }
-    const newPost = await PostModel.create({
-        media,
-        caption
-    })
-    console.log(req.user)
-    await UserModel.findByIdAndUpdate(req.user._id, {
-        $push: {
-            posts: newPost._id
-        }
-    })
-    res.status(201).json(newPost)
-
-}
+};
