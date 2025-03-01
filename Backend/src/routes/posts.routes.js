@@ -19,7 +19,7 @@ router.post('/create',
                 isPublished: true,
                 isPrivateFile: false,
             });
-            req.body.media = file.url; // Use file.url to store the image URL
+            req.body.media = file; // Use file.url to store the image URL
             next();
         } catch (error) {
             console.error("ImageKit upload error:", error);

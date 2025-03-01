@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from'react-router-dom';
 
 const CreatePost = () => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -30,6 +32,7 @@ const CreatePost = () => {
             })
             .finally(() => {
                 setLoading(false);
+                navigate('/');
             });
     };
 

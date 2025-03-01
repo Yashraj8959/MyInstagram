@@ -60,7 +60,7 @@ const Home = () => {
             <div className="p-4 flex flex-col items-center gap-4">
                 {posts.map((post) => (
                     <div key={post._id} className="mb-4 w-full max-w-md rounded overflow-hidden shadow-lg bg-gray-800 p-4">
-                        <img className="w-full" src={post.media} alt="Post Media" />
+                        <img className="w-full" src={post.media.url} alt="Post Media" />
                         <div className="px-6 py-4">
                             <p className="text-gray-300 text-base">{post.caption}</p>
                         </div>
